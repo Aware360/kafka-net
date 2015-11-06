@@ -411,7 +411,7 @@
         internal IMeter ByteRate { get; private set; }
     }
 
-    internal class ClientIdBrokerTopicPartition
+    internal class ClientIdBrokerTopicPartition : IEquatable<ClientIdBrokerTopicPartition>
     {
         public string ClientId { get; private set; }
 
@@ -427,6 +427,20 @@
             this.BrokerInfo = brokerInfo;
             this.Topic = topic;
             this.PartitonId = partitonId;
+        }
+
+        public bool Equals(ClientIdBrokerTopicPartition obj)
+        {
+            return ClientId.Equals(obj.ClientId) && BrokerInfo.Equals(obj.BrokerInfo) && Topic.Equals(obj.Topic) && PartitonId == obj.PartitonId;
+        }
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash = hash * 31 + ClientId.GetHashCode();
+            hash = hash * 31 + BrokerInfo.GetHashCode();
+            hash = hash * 31 + Topic.GetHashCode();
+            hash = hash * 31 + PartitonId.GetHashCode();
+            return hash;
         }
     }
 }
