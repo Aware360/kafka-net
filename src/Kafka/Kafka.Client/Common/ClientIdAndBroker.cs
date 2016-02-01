@@ -4,7 +4,7 @@
     /// Convenience case class since (clientId, brokerInfo) pairs are used to create
     /// SyncProducer Request Stats and SimpleConsumer Request and Response Stats.
     /// </summary>
-    public class ClientIdAndBroker : System.IEquatable<ClientIdAndBroker>
+    public class ClientIdAndBroker
     {
         public string ClientId { get; private set; }
 
@@ -20,16 +20,38 @@
         {
             return string.Format("{0}-{1}", this.ClientId, this.BrokerInfo);
         }
-        public bool Equals(ClientIdAndBroker obj)
+
+        protected bool Equals(ClientIdAndBroker other)
         {
-            return ClientId.Equals(obj.ClientId) && BrokerInfo.Equals(obj.BrokerInfo);
+            return this.ClientId == other.ClientId && this.BrokerInfo == other.BrokerInfo;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return this.Equals((ClientIdAndBroker)obj);
+        }
+
         public override int GetHashCode()
         {
-            int hash = 17;
-            hash = hash * 31 + ClientId.GetHashCode();
-            hash = hash * 31 + BrokerInfo.GetHashCode();            
-            return hash;
+            unchecked
+            {
+                return ((this.ClientId != null ? this.ClientId.GetHashCode() : 0) * 397) ^ (this.BrokerInfo != null ? this.BrokerInfo.GetHashCode() : 0);
+            }
         }
     }
 }
